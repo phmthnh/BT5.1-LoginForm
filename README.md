@@ -1,69 +1,71 @@
-# 🔐 Bài Tập 5.1 – Nâng cấp Form Đăng Nhập (Bài 4.1)
+# BÁO CÁO BÀI TẬP THỰC HÀNH LẬP TRÌNH C# WINFORMS
 
-Nâng cấp Form đăng nhập Windows Forms C# bằng cơ sở dữ liệu SQLite.
+**Bài 5.1: Nâng cấp Form đăng nhập (Bài 4.1) bằng việc lưu trữ vào CSDL.**
 
----
+## I. THÔNG TIN SINH VIÊN
 
-## 📋 Mô tả
-
-Form đăng nhập với đầy đủ các tính năng:
-- Kiểm tra dữ liệu nhập bằng **ErrorProvider** (không để trống)
-- Xác thực tên đăng nhập và mật khẩu từ **CSDL SQLite**; từ chối tài khoản không tồn tại hoặc mật khẩu sai
-- Lưu mật khẩu bằng **PBKDF2-SHA256**, salt ngẫu nhiên và 600.000 vòng lặp
-- Ẩn/hiện mật khẩu bằng **CheckBox**
-- Phím **Enter** → kích hoạt nút Đăng Nhập
-- Phím **Esc** → thoát ứng dụng
+- **Họ và tên:** Phạm Tuấn Thành
+- **Mã số sinh viên:** 24810320264
+- **Lớp học phần:** D19QTANM1
+- **Link Repository:** [BT5.1-LoginForm](https://github.com/phmthnh/BT5.1-LoginForm)
 
 ---
 
-## 🖼️ Giao diện
+## II. DANH SÁCH BÀI TẬP HOÀN THÀNH & TỰ ĐÁNH GIÁ
 
-![Đăng nhập thành công với tài khoản trong SQLite](docs/login-sqlite.png)
-
----
-
-## ⚙️ Các thành phần chính
-
-| Tên Control | Chức năng |
-|-------------|-----------|
-| `txtUsername` | Ô nhập tên đăng nhập |
-| `txtPassword` | Ô nhập mật khẩu (ẩn `***` mặc định) |
-| `chkShowPassword` | Tick để hiện mật khẩu, bỏ tick để ẩn |
-| `btnLogin` | Nút đăng nhập — gán `AcceptButton` (phím Enter) |
-| `btnExit` | Nút thoát — gán `CancelButton` (phím Esc) |
-| `errorProvider` | Hiển thị lỗi khi bỏ trống username hoặc password |
+| Bài tập | Tiêu đề bài tập | Trạng thái | Mức độ hoàn thành (%) |
+| :---: | :--- | :---: | :---: |
+| **Bài 5.1** | Nâng cấp Form đăng nhập (Bài 4.1) bằng CSDL SQLite | Hoàn thành | 100% |
 
 ---
 
-## 🚀 Cách chạy
+## III. MINH HỌA GIAO DIỆN & KỸ THUẬT NỔI BẬT
 
-**Bằng Visual Studio:**
-1. Mở file `BT5_1_LoginForm.slnx` bằng Visual Studio 2026, có workload **.NET desktop development**
-2. Nhấn `F5` để chạy
+### 1. Form đăng nhập (Bài 4.1)
 
-**Bằng terminal:**
+**Kỹ thuật áp dụng:** Windows Forms, `ErrorProvider`, truy vấn SQL có tham số với `Microsoft.Data.Sqlite`, lưu mật khẩu bằng PBKDF2-SHA256 và salt ngẫu nhiên.
+
+**Chức năng:** Kiểm tra tên đăng nhập và mật khẩu không để trống; xác thực tài khoản từ CSDL; thông báo khi đăng nhập thành công hoặc nhập sai thông tin. CheckBox cho phép ẩn/hiện mật khẩu, Enter để đăng nhập và Esc để thoát.
+
+![Giao diện Bài 5.1](docs/login-sqlite.png)
+
+*Mô tả: Form hiển thị thông báo đăng nhập thành công sau khi xác thực tài khoản trong CSDL SQLite.*
+
+### 2. Lưu trữ dữ liệu
+
+- Bảng `Users` được tự tạo từ [Database/Schema.sql](Database/Schema.sql) khi mở ứng dụng lần đầu.
+- Tài khoản thực hành: **`admin` / `Admin@123`**. Khởi tạo lại không ghi đè mật khẩu đã lưu.
+- Mật khẩu được lưu dưới dạng hash, kèm salt và số vòng lặp; không lưu mật khẩu dạng văn bản thuần.
+- File CSDL: `%LOCALAPPDATA%\LTNET\BT51-LoginForm\login.db`. Dữ liệu được giữ lại sau khi đóng và mở ứng dụng.
+
+---
+
+## IV. HƯỚNG DẪN CÀI ĐẶT & CHẠY DỰ ÁN
+
+### 1. Môi trường
+
+- Windows, .NET 10.0 SDK.
+- Visual Studio 2026 (18.0 trở lên), workload **.NET desktop development**.
+- NuGet `Microsoft.Data.Sqlite` được khôi phục khi build; bản SQLite không cần dịch vụ SQL Server.
+
+### 2. Clone và chạy bằng Visual Studio
+
 ```bash
-dotnet run
+git clone https://github.com/phmthnh/BT5.1-LoginForm.git
+cd BT5.1-LoginForm
 ```
 
----
+1. Mở `BT5_1_LoginForm.slnx` bằng Visual Studio.
+2. Nhấn **F5** hoặc chọn **Start** để biên dịch và chạy.
+3. Nhập tài khoản thực hành ở mục III, nhấn **Đăng Nhập**.
+4. Xem giao diện thiết kế: trong Solution Explorer, nhấp phải `LoginForm.cs` → **View Designer**, hoặc nhấn **Shift+F7**.
 
-## 🛠️ Yêu cầu
-- .NET 10.0 SDK
-- Windows OS
-- Visual Studio 2026 (18.0 trở lên) nếu chạy bằng IDE
-- NuGet `Microsoft.Data.Sqlite` (được restore khi build)
+### 3. Chạy bằng terminal
 
-## 🗄️ Cơ sở dữ liệu
+Trong thư mục repository:
 
-- Tự tạo bảng `Users` từ [Database/Schema.sql](Database/Schema.sql) khi mở ứng dụng lần đầu.
-- File mặc định: `%LOCALAPPDATA%\LTNET\BT51-LoginForm\login.db`.
-- Tài khoản thực hành: **`admin` / `Admin@123`**. Khởi tạo lại không ghi đè mật khẩu đã có trong CSDL.
-- Dữ liệu được giữ lại sau khi đóng/mở ứng dụng; không cần cài dịch vụ SQL Server để chạy bản SQLite này.
-- Truy vấn dùng tham số; file CSDL và `bin/obj/.vs` không đẩy lên GitHub.
-- Có thể đặt biến môi trường `BT51_DATABASE_PATH` để chọn đường dẫn file CSDL khác.
+```bash
+dotnet run --project BT5_1_LoginForm.csproj
+```
 
-## 🔗 Repository
-
-- [Bài 5.1 – nâng cấp Bài 4.1](https://github.com/phmthnh/BT5.1-LoginForm)
-- [Bài 5.2 – nâng cấp Bài 4.2](https://github.com/phmthnh/BT5.2-StudentRegistration)
+Có thể đặt biến môi trường `BT51_DATABASE_PATH` để chọn đường dẫn file CSDL khác.
