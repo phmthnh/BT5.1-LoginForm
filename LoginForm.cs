@@ -8,11 +8,15 @@ namespace BT5_1_LoginForm
     public partial class LoginForm : Form
     {
         private readonly UserRepository users = new();
+        private readonly ErrorProvider errorProvider;
         private bool databaseReady;
 
         public LoginForm()
         {
             InitializeComponent();
+            components ??= new System.ComponentModel.Container();
+            // Khởi tạo lúc chạy để tránh lỗi thuộc tính mở rộng của ErrorProvider trong Designer.
+            errorProvider = new ErrorProvider(components) { ContainerControl = this };
             txtUsername.MaxLength = 100;
             btnLogin.Enabled = false;
             Shown += LoginForm_Shown;

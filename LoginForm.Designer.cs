@@ -22,8 +22,6 @@ namespace BT5_1_LoginForm
             this.chkShowPassword = new System.Windows.Forms.CheckBox();
             this.btnLogin = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             //
             // lblTitle
@@ -102,10 +100,6 @@ namespace BT5_1_LoginForm
             this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             //
-            // errorProvider
-            //
-            this.errorProvider.ContainerControl = this;
-            //
             // LoginForm
             //
             this.AcceptButton = this.btnLogin;
@@ -124,7 +118,6 @@ namespace BT5_1_LoginForm
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Đăng Nhập Hệ Thống";
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -137,6 +130,5 @@ namespace BT5_1_LoginForm
         private System.Windows.Forms.CheckBox chkShowPassword;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }
