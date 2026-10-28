@@ -1,0 +1,14 @@
+﻿bin/
+obj/
+.vs/
+*.user
+*.suo
+*.log
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
