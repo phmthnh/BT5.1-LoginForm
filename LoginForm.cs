@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using BT5_1_LoginForm.Data;
-using Microsoft.Data.Sqlite;
+using Microsoft.Data.SqlClient;
 
 namespace BT5_1_LoginForm
 {
@@ -30,10 +30,10 @@ namespace BT5_1_LoginForm
                 databaseReady = true;
                 if (!IsDisposed) btnLogin.Enabled = true;
             }
-            catch (Exception ex) when (ex is SqliteException or IOException or UnauthorizedAccessException or ArgumentException)
+            catch (Exception ex) when (ex is SqlException or IOException or UnauthorizedAccessException or ArgumentException)
             {
                 if (!IsDisposed)
-                    MessageBox.Show(this, "Không thể mở cơ sở dữ liệu đăng nhập. Kiểm tra quyền ghi thư mục dữ liệu rồi mở lại ứng dụng.",
+                    MessageBox.Show(this, "Không thể mở cơ sở dữ liệu đăng nhập. Kiểm tra SQL Server và chuỗi kết nối rồi mở lại ứng dụng.",
                         "Lỗi cơ sở dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -90,7 +90,7 @@ namespace BT5_1_LoginForm
                     MessageBoxIcon.Information
                 );
             }
-            catch (Exception ex) when (ex is SqliteException or IOException or UnauthorizedAccessException or ArgumentException)
+            catch (Exception ex) when (ex is SqlException or IOException or UnauthorizedAccessException or ArgumentException)
             {
                 if (!IsDisposed)
                     MessageBox.Show(this, "Không thể đọc cơ sở dữ liệu đăng nhập. Vui lòng thử lại.",

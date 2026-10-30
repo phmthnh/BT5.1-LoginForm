@@ -1,4 +1,5 @@
-using Microsoft.Data.Sqlite;
+using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace BT5_1_LoginForm.Data;
 
@@ -6,6 +7,7 @@ internal sealed class UserRepository
 {
     internal Task InitializeAsync() => Task.Run(() =>
     {
+        Database.EnsureCreated();
         using var connection = Database.OpenConnection();
         using var transaction = connection.BeginTransaction();
         using var schema = connection.CreateCommand();
@@ -18,14 +20,14 @@ internal sealed class UserRepository
         using var seed = connection.CreateCommand();
         seed.Transaction = transaction;
         seed.CommandText = """
-            INSERT INTO Users (Username, PasswordHash, PasswordSalt, PasswordIterations)
-            VALUES ($username, $hash, $salt, $iterations)
-            ON CONFLICT(Username) DO NOTHING;
+            IF NOT EXISTS (SELECT 1 FROM dbo.Users WITH (UPDLOCK, HOLDLOCK) WHERE Username = @username)
+                INSERT INTO dbo.Users (Username, PasswordHash, PasswordSalt, PasswordIterations)
+                VALUES (@username, @hash, @salt, @iterations);
             """;
-        seed.Parameters.Add("$username", SqliteType.Text).Value = "admin";
-        seed.Parameters.Add("$hash", SqliteType.Blob).Value = password.Hash;
-        seed.Parameters.Add("$salt", SqliteType.Blob).Value = password.Salt;
-        seed.Parameters.Add("$iterations", SqliteType.Integer).Value = PasswordHasher.Iterations;
+        seed.Parameters.Add("@username", SqlDbType.NVarChar, 100).Value = "admin";
+        seed.Parameters.Add("@hash", SqlDbType.VarBinary, 32).Value = password.Hash;
+        seed.Parameters.Add("@salt", SqlDbType.VarBinary, 16).Value = password.Salt;
+        seed.Parameters.Add("@iterations", SqlDbType.Int).Value = PasswordHasher.Iterations;
         seed.ExecuteNonQuery();
         transaction.Commit();
     });
@@ -36,9 +38,9 @@ internal sealed class UserRepository
         using var command = connection.CreateCommand();
         command.CommandText = """
             SELECT PasswordHash, PasswordSalt, PasswordIterations
-            FROM Users WHERE Username = $username;
+            FROM Users WHERE Username = @username;
             """;
-        command.Parameters.Add("$username", SqliteType.Text).Value = username.Trim();
+        command.Parameters.Add("@username", SqlDbType.NVarChar, 100).Value = username.Trim();
         using var reader = command.ExecuteReader();
         return reader.Read() && PasswordHasher.Verify(password,
             (byte[])reader[0], (byte[])reader[1], reader.GetInt32(2));

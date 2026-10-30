@@ -15,7 +15,7 @@
 
 | Bài tập | Tiêu đề bài tập | Trạng thái | Mức độ hoàn thành (%) |
 | :---: | :--- | :---: | :---: |
-| **Bài 5.1** | Nâng cấp Form đăng nhập (Bài 4.1) bằng CSDL SQLite | Hoàn thành | 100% |
+| **Bài 5.1** | Nâng cấp Form đăng nhập (Bài 4.1) bằng CSDL SQL Server | Hoàn thành | 100% |
 
 ---
 
@@ -23,20 +23,20 @@
 
 ### 1. Form đăng nhập (Bài 4.1)
 
-**Kỹ thuật áp dụng:** Windows Forms, `ErrorProvider`, truy vấn SQL có tham số với `Microsoft.Data.Sqlite`, lưu mật khẩu bằng PBKDF2-SHA256 và salt ngẫu nhiên.
+**Kỹ thuật áp dụng:** Windows Forms, `ErrorProvider`, truy vấn SQL có tham số với `Microsoft.Data.SqlClient`, lưu mật khẩu bằng PBKDF2-SHA256 và salt ngẫu nhiên.
 
 **Chức năng:** Kiểm tra tên đăng nhập và mật khẩu không để trống; xác thực tài khoản từ CSDL; thông báo khi đăng nhập thành công hoặc nhập sai thông tin. CheckBox cho phép ẩn/hiện mật khẩu, Enter để đăng nhập và Esc để thoát.
 
-![Giao diện Bài 5.1](docs/login-sqlite.png)
+![Giao diện Bài 5.1](docs/login-sqlserver.png)
 
-*Mô tả: Form hiển thị thông báo đăng nhập thành công sau khi xác thực tài khoản trong CSDL SQLite.*
+*Mô tả: Form hiển thị thông báo đăng nhập thành công sau khi xác thực tài khoản trong CSDL SQL Server.*
 
 ### 2. Lưu trữ dữ liệu
 
 - Bảng `Users` được tự tạo từ [Database/Schema.sql](Database/Schema.sql) khi mở ứng dụng lần đầu.
 - Tài khoản thực hành: **`admin` / `Admin@123`**. Khởi tạo lại không ghi đè mật khẩu đã lưu.
 - Mật khẩu được lưu dưới dạng hash, kèm salt và số vòng lặp; không lưu mật khẩu dạng văn bản thuần.
-- File CSDL: `%LOCALAPPDATA%\LTNET\BT51-LoginForm\login.db`. Dữ liệu được giữ lại sau khi đóng và mở ứng dụng.
+- CSDL `BT51_LoginForm` được lưu trong SQL Server LocalDB instance `LTNET_BT5_SQL`. Dữ liệu được giữ lại sau khi đóng và mở ứng dụng.
 
 ---
 
@@ -46,13 +46,21 @@
 
 - Windows, .NET 10.0 SDK.
 - Visual Studio 2026 (18.0 trở lên), workload **.NET desktop development**.
-- NuGet `Microsoft.Data.Sqlite` được khôi phục khi build; bản SQLite không cần dịch vụ SQL Server.
+- SQL Server Express LocalDB 2025.
+- NuGet `Microsoft.Data.SqlClient` được khôi phục khi build.
 
 ### 2. Clone và chạy bằng Visual Studio
 
 ```bash
 git clone https://github.com/phmthnh/BT5.1-LoginForm.git
 cd BT5.1-LoginForm
+```
+
+Tạo instance LocalDB một lần trong terminal:
+
+```powershell
+sqllocaldb create LTNET_BT5_SQL
+sqllocaldb start LTNET_BT5_SQL
 ```
 
 1. Mở `BT5_1_LoginForm.slnx` bằng Visual Studio.
@@ -68,4 +76,10 @@ Trong thư mục repository:
 dotnet run --project BT5_1_LoginForm.csproj
 ```
 
-Có thể đặt biến môi trường `BT51_DATABASE_PATH` để chọn đường dẫn file CSDL khác.
+Chuỗi kết nối mặc định dùng Windows Authentication:
+
+```text
+Server=(localdb)\LTNET_BT5_SQL;Database=BT51_LoginForm;Integrated Security=true;Encrypt=true;TrustServerCertificate=true;Connect Timeout=15
+```
+
+Ứng dụng tự tạo CSDL và bảng khi chạy lần đầu. Có thể đặt biến môi trường `BT51_CONNECTION_STRING` để sử dụng SQL Server hoặc CSDL khác; tài khoản kết nối cần quyền tạo CSDL khi CSDL chưa tồn tại. `TrustServerCertificate=true` trong cấu hình mẫu dành cho LocalDB trên máy cá nhân; với máy chủ khác, dùng cấu hình chứng chỉ phù hợp.
